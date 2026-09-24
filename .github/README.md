@@ -47,7 +47,15 @@ On the phone app the button is in the player's action bar, and "Join a Watch Par
 | **Android TV / Google TV / Fire TV** | [`NuvioPartyTV.apk`](https://github.com/AntoninoScardina/NuvioTV/releases/latest/download/NuvioPartyTV.apk) (universal) |
 | **Android phone** | [`NuvioParty.apk`](https://github.com/AntoninoScardina/NuvioMobile/releases/latest/download/NuvioParty.apk) (arm64) · [other builds](https://github.com/AntoninoScardina/NuvioMobile/releases/latest) |
 
-**On a TV with the Downloader app**, type this URL:
+**On a TV with the [Downloader](https://www.aftvnews.com/downloader/) app** just type the code:
+
+<div align="center">
+
+# `8017675`
+
+</div>
+
+It always downloads the latest TV release. Alternatively, type the full URL:
 
 ```
 https://github.com/AntoninoScardina/NuvioTV/releases/latest/download/NuvioPartyTV.apk
@@ -134,7 +142,7 @@ Sul telefono il pulsante è nella barra azioni del player, e "Unisciti a un Watc
 
 ### Installazione
 
-- **TV (Android TV / Google TV / Fire TV):** [`NuvioPartyTV.apk`](https://github.com/AntoninoScardina/NuvioTV/releases/latest/download/NuvioPartyTV.apk). Con l'app **Downloader** inserisci l'URL qui sopra.
+- **TV (Android TV / Google TV / Fire TV):** [`NuvioPartyTV.apk`](https://github.com/AntoninoScardina/NuvioTV/releases/latest/download/NuvioPartyTV.apk). Con l'app **Downloader** inserisci il codice **`8017675`**: scarica sempre l'ultima versione.
 - **Telefono Android:** [`NuvioParty.apk`](https://github.com/AntoninoScardina/NuvioMobile/releases/latest/download/NuvioParty.apk).
 
 > [!IMPORTANT]
