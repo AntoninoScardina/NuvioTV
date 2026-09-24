@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Palette
@@ -109,6 +110,7 @@ internal enum class SettingsCategory {
     PLAYBACK,
     ADVANCED,
     TRACKING,
+    WATCH_PARTY,
     ABOUT,
     DEBUG
 }
@@ -229,6 +231,13 @@ private fun rememberSettingsSectionSpecs() = listOf(
         destination = SettingsSectionDestination.External
     ),
     SettingsSectionSpec(
+        category = SettingsCategory.WATCH_PARTY,
+        title = stringResource(R.string.watch_party_settings_title),
+        icon = Icons.Default.Groups,
+        subtitle = stringResource(R.string.watch_party_settings_subtitle),
+        destination = SettingsSectionDestination.External
+    ),
+    SettingsSectionSpec(
         category = SettingsCategory.ABOUT,
         title = stringResource(R.string.about_title),
         icon = Icons.Default.Info,
@@ -255,6 +264,7 @@ private fun rememberSettingsSectionSpecs() = listOf(
 fun SettingsScreen(
     showBuiltInHeader: Boolean = true,
     onNavigateToTracking: () -> Unit = {},
+    onNavigateToWatchParty: () -> Unit = {},
     onNavigateToAddons: () -> Unit = {},
     onNavigateToPlugins: () -> Unit = {},
     onNavigateToAuthQrSignIn: () -> Unit = {},
@@ -516,6 +526,7 @@ fun SettingsScreen(
                     when (section.category) {
                         SettingsCategory.ACCOUNT -> onNavigateToAuthQrSignIn()
                         SettingsCategory.TRACKING -> onNavigateToTracking()
+                        SettingsCategory.WATCH_PARTY -> onNavigateToWatchParty()
                         else -> Unit
                     }
                 } else {
@@ -1038,6 +1049,7 @@ private fun SettingsDetailPane(
         )
         SettingsCategory.DEBUG -> DebugSettingsContent()
         SettingsCategory.TRACKING -> Unit
+        SettingsCategory.WATCH_PARTY -> Unit
     }
 }
 

@@ -55,6 +55,8 @@ import com.nuvio.tv.ui.screens.profile.ProfileSelectionMode
 import com.nuvio.tv.ui.screens.profile.ProfileSelectionScreen
 import com.nuvio.tv.ui.screens.tmdb.TmdbEntityBrowseScreen
 import com.nuvio.tv.ui.screens.home.HeroBackdropState
+import com.nuvio.tv.ui.screens.watchparty.WatchPartyJoinScreen
+import com.nuvio.tv.ui.screens.watchparty.WatchPartyNavigationEffect
 
 @Composable
 fun NuvioNavHost(
@@ -82,6 +84,8 @@ private fun PlaybackNavHost(
     fun isPlayerToStream(from: String, to: String): Boolean {
         return from.startsWith("player/") && to.startsWith("stream/")
     }
+
+    WatchPartyNavigationEffect(navController)
 
     NavHost(
         navController = navController,
@@ -1195,6 +1199,7 @@ private fun PlaybackNavHost(
             SettingsScreen(
                 showBuiltInHeader = !hideBuiltInHeaders,
                 onNavigateToTracking = { navController.navigate(Screen.Tracking.route) },
+                onNavigateToWatchParty = { navController.navigate(Screen.WatchPartyJoin.route) },
                 onNavigateToAddons = { navController.navigate(Screen.AddonManager.route) },
                 onNavigateToPlugins = { navController.navigate(Screen.Plugins.route) },
                 onNavigateToAuthQrSignIn = { navController.navigate(Screen.AuthQrSignIn.route) },
@@ -1206,6 +1211,10 @@ private fun PlaybackNavHost(
                     navController.navigate(Screen.LicensesAttributions.route)
                 }
             )
+        }
+
+        composable(Screen.WatchPartyJoin.route) {
+            WatchPartyJoinScreen(onBackPress = { navController.popBackStack() })
         }
 
         composable(Screen.ManageProfiles.route) {

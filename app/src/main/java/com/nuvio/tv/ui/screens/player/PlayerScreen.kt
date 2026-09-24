@@ -62,6 +62,7 @@ import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ClosedCaption
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -173,6 +174,7 @@ fun PlayerScreen(
     val postPlayRecommendationFocusRequester = remember { FocusRequester() }
     val postPlayRecommendationPlayerWindowFocusRequester = remember { FocusRequester() }
     var skipButtonActuallyVisible by remember { mutableStateOf(false) }
+    var showWatchPartyPanel by remember { mutableStateOf(false) }
     var restoreStreamInfoFocus by remember { mutableStateOf(false) }
     var focusPlayAfterMoreBack by remember { mutableStateOf(false) }
     val nextEpisodeFocusRequester = remember { FocusRequester() }
@@ -267,7 +269,9 @@ fun PlayerScreen(
 
     val handleBackPress = handleBackPress@{
         if (externalHandoffInProgress) return@handleBackPress
-        if (postPlayRecommendationState.canReturnToPlayer && !uiState.playbackEnded) {
+        if (showWatchPartyPanel) {
+            showWatchPartyPanel = false
+        } else if (postPlayRecommendationState.canReturnToPlayer && !uiState.playbackEnded) {
             returnToPlayerFromPostPlay()
             viewModel.hideControls()
         } else if (postPlayRecommendationState.isVisible || postPlayRecommendationState.isLoadingRecommendation) {
@@ -713,7 +717,7 @@ fun PlayerScreen(
                         uiState.showAudioOverlay || uiState.showSubtitleOverlay ||
                         uiState.showSubtitleStylePanel || uiState.showSpeedDialog ||
                         uiState.showSubtitleDelayOverlay || uiState.showSubtitleTimingDialog ||
-                        uiState.showMoreDialog ||
+                        uiState.showMoreDialog || showWatchPartyPanel ||
                         shouldConfirmNextEpisodeOnEnd ||
                         uiState.postPlayMode is PostPlayMode.StillWatching ||
                         postPlayRecommendationState.isVisible ||
@@ -1342,6 +1346,10 @@ fun PlayerScreen(
                     restoreStreamInfoFocus = true
                     viewModel.onEvent(PlayerEvent.OnShowStreamInfo)
                 },
+                onOpenWatchParty = {
+                    viewModel.hideControls()
+                    showWatchPartyPanel = true
+                },
                 onResetHideTimer = {
                     viewModel.scheduleHideControls()
                     viewModel.onUserInteraction()
@@ -1678,6 +1686,34 @@ fun PlayerScreen(
                 onDismiss = { viewModel.onEvent(PlayerEvent.OnDismissTransientOverlay) }
             )
         }
+
+        WatchPartyPlayerBinding(viewModel = viewModel)
+        if (uiState.showControls && !showWatchPartyPanel) {
+            WatchPartyBadge(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 24.dp, end = 32.dp)
+                    .zIndex(2.2f)
+            )
+        }
+        var watchPartyPanelWasOpen by remember { mutableStateOf(false) }
+        LaunchedEffect(showWatchPartyPanel) {
+            if (showWatchPartyPanel) {
+                watchPartyPanelWasOpen = true
+            } else if (watchPartyPanelWasOpen) {
+                watchPartyPanelWasOpen = false
+                delay(250)
+                runCatching { containerFocusRequester.requestFocus() }
+            }
+        }
+        WatchPartyPlayerPanel(
+            visible = showWatchPartyPanel,
+            canShare = viewModel.controller.watchPartyMedia() != null,
+            onDismiss = { showWatchPartyPanel = false },
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(2.7f)
+        )
     }
 }
 
@@ -2082,6 +2118,7 @@ private fun PlayerControlsOverlay(
     onToggleMoreActions: () -> Unit,
     onOpenInExternalPlayer: () -> Unit,
     onShowStreamInfo: () -> Unit,
+    onOpenWatchParty: () -> Unit = {},
     onResetHideTimer: () -> Unit,
     onHideControls: () -> Unit,
     onBack: () -> Unit,
@@ -2378,6 +2415,14 @@ private fun PlayerControlsOverlay(
                                 onClick = {
                                     onOpenInExternalPlayer()
                                 },
+                                upFocusRequester = progressUpTarget,
+                                onDownKey = onHideControls,
+                                onFocused = onResetHideTimer
+                            )
+                            ControlButton(
+                                icon = Icons.Default.Groups,
+                                contentDescription = stringResource(R.string.cd_watch_party),
+                                onClick = onOpenWatchParty,
                                 upFocusRequester = progressUpTarget,
                                 onDownKey = onHideControls,
                                 onFocused = onResetHideTimer
